@@ -55,7 +55,7 @@ class NodePortClient(KubernetesApi):
         service = self.kubernetes_client.V1Service(api_version="v1", kind="Service")
         service_match_label={"nodeport":self.instance_name}
         service.metadata = self.kubernetes_client.V1ObjectMeta(name=self.instance_name,labels=service_match_label)
-        service.spec = self.kubernetes_client.V1ServiceSpec(selector={'nodeport': self.instance_name}, ports=ports, type=self.service_type)
+        service.spec = self.kubernetes_client.V1ServiceSpec(selector={'nodeport': self.instance_name}, ports=self._get_service_nodeport(), type=self.service_type)
         return service
 
     

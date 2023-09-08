@@ -1,3 +1,6 @@
 from django.contrib import admin
+from NSDManagement.models import *
 
-# Register your models here.
+admin.site.register(NsdInfo)
+admin.site.register(NsdInfoProblemDetails)
+admin.site.register(NsdInfoLinks)

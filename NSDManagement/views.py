@@ -165,7 +165,10 @@ class NSDescriptorsViewSet(viewsets.ModelViewSet):
             nsd_content = network_service_descriptor.processing_data()
             vnf_pkg_ids_list = list()
             for vnfd in network_service_descriptor.get_constituent_vnfd():
-                vnf_pkg_ids_list.append(str(VnfPkgInfo.objects.filter(vnfdId__iexact=vnfd['vnfd_id']).last().id))
+                try:
+                    vnf_pkg_ids_list.append(str(VnfPkgInfo.objects.filter(vnfdId__iexact=vnfd['vnfd_id']).last().id))
+                except:
+                    pass
 
             nsd_content['vnfPkgIds'] = json.dumps(vnf_pkg_ids_list)
             serializer = self.get_serializer(instance, data=nsd_content)

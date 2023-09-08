@@ -87,12 +87,13 @@ class NSLifecycleManagementViewSet(viewsets.ModelViewSet):
         if 'nsDescription' not in request.data:
             raise APIException(detail='nsDescription is not existing',
                                code=status.HTTP_409_CONFLICT)
-
+        
         ns_descriptors_info = NsdInfo.objects.filter(nsdId=request.data['nsdId']).last()
+        print("ns:", ns_descriptors_info.vnfPkgIds)
         if ns_descriptors_info is None:
             raise APIException(detail='nsdId is not existing',
                                code=status.HTTP_409_CONFLICT)
-
+        
         vnf_pkg_Ids = json.loads(ns_descriptors_info.vnfPkgIds)
         nsd_info_id = str(ns_descriptors_info.id)
         request.data['nsdInfoId'] = nsd_info_id

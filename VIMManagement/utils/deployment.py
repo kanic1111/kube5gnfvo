@@ -113,13 +113,13 @@ class DeploymentClient(KubernetesApi):
                     annotations_name += net_info['network_name']
                 else:
                     annotations_name += '{},'.format(net_info['network_name'])
-                init_containers.append(self.kubernetes_client.V1Container(
-                    name='init-network-client{}'.format(net_info['network_name']),
-                    image='tw0927041027/init-network-setting',
-                    command=["./ip_service"], args=['-d', self.instance_name, '-n', 'net{}'.format(idx + 1),
-                                                    '-c', json.dumps(net_info['ip_address'])],
-                    env=[env_var],
-                    security_context=self.kubernetes_client.V1SecurityContext(privileged=True)))
+                    init_containers.append(self.kubernetes_client.V1Container(
+                        name='init-network-client{}'.format(net_info['network_name']),
+                        image='tw0927041027/init-network-setting',
+                        command=["./ip_service"], 
+                        args=['-d', self.instance_name, '-n', 'net{}'.format(idx + 1), '-c', json.dumps(net_info['ip_address'])],
+                        env=[env_var],
+                        security_context=self.kubernetes_client.V1SecurityContext(privileged=True)))
 
                 if net_info['type'] == SR_IOV:
                     sr_iov_count = +1

@@ -21,6 +21,7 @@ class DockerClient():
         pass
 
     def create_resource(self, **kwargs):
+        print(self.nodeport[0])
         self.client.containers.run(self.image, ports={str(self.nodeport[0])+'/'+self.nodeport_protocol[0]: self.virtualport[0]})
 
     def patch_resource(self, **kwargs):
@@ -37,7 +38,7 @@ class DockerClient():
         service = self.kubernetes_client.V1Service(api_version="v1", kind="Service")
         service_match_label={"nodeport":self.instance_name}
         service.metadata = self.kubernetes_client.V1ObjectMeta(name=self.instance_name,labels=service_match_label)
-        service.spec = self.kubernetes_client.V1ServiceSpec(selector={'nodeport': self.instance_name}, ports=[self.kubernetes_client.V1ServicePort(protocol="TCP", port=8080, target_port=8080, node_port=30080)], type=self.service_type)
+        service.spec = self.kubernetes_client.V1ServiceSpec(selector={'nodeport': self.instance_name}, ports=[self.kubernetes_client.V1ServicePort(protocol="TCP", port=8080, target_port=8080, node_port=30080)], type=self.service_type, cluster_ip="None")
         return service
 
 

@@ -18,12 +18,7 @@ class ServiceClient(KubernetesApi):
         return self.core_v1.read_namespaced_service(self.instance_name, self.namespace)
 
     def create_resource(self, **kwargs):
-        try:
-            self.core_v1.create_namespaced_service(self.namespace, self.resource)
-        except:
-            resource = self.resource.to_dict()
-            resource['spec']['ports'][0]['node_port'] = random.randrange(30000, 40000)
-            self.core_v1.create_namespaced_service(self.namespace, resource)
+        self.core_v1.create_namespaced_service(self.namespace, self.resource)   
 
     def patch_resource(self, **kwargs):
         self.core_v1.patch_namespaced_service(self.instance_name, self.namespace, self.resource)
@@ -42,7 +37,7 @@ class ServiceClient(KubernetesApi):
                 selector={'app': self.instance_name}, ports=self._get_service_node_port(), type=self.service_type)
         else:
             service.spec = self.kubernetes_client.V1ServiceSpec(
-                cluster_ip='None', selector={'app': self.instance_name}, ports=self._get_service_port(), type=self.service_type)
+                selector={'app': self.instance_name}, cluster_ip="None", ports=self._get_service_port(), type=self.service_type)
         return service
 
     def _get_service_port(self):
@@ -56,6 +51,7 @@ class ServiceClient(KubernetesApi):
                 service_port.append(self._create_service_port(protocol, self.ports[i]))
                 i = i + 1
             return service_port
+        
     def _get_service_node_port(self):
         if self.protocol is None:
             protocol = 'TCP'
@@ -67,6 +63,7 @@ class ServiceClient(KubernetesApi):
                 service_port.append(self._create_service_node_port(protocol, self.ports[i],self.target_port,self.node_port))
                 i = i + 1
             return service_port
+        
     def _create_service_node_port(self,protocol,port,target_port,node_port):
         if target_port is None:
             return self.kubernetes_client.V1ServicePort(
